@@ -9,29 +9,36 @@ https://github.com/rancher/rke/releases/
 3. create rke cluster
 ./rke up --config cluster.yml
 
-4. rbac
-https://rancher.com/docs/rancher/v2.x/en/installation/options/helm2/helm-init/
-
-kubectl -n kube-system create serviceaccount tiller
-
-kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
-
-5. add repo
+4. add repo
 helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
 
-6. new ns
+5. new ns
 kubectl create namespace cattle-system
 
-7. cert-manager
+6. cert-manager
 kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.1/cert-manager.yaml
+kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.1/cert-manager.crds.yaml
 
-/*
+or
+
 kubectl create namespace cert-manager
 helm repo add jetstack https://charts.jetstack.io
 helm repo update
-helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v0.15.1 
-*/
 
-8. rancher
+# Helm v3+
+$ helm install cert-manager jetstack/cert-manager --namespace cert-manager --version v0.15.1 --set installCRDs=true
+
+7. rancher
 
 helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=rancher.media.zottel.gnu
+
+
+
+
+
+# helm 2 related
+xx. rbac
+https://rancher.com/docs/rancher/v2.x/en/installation/options/helm2/helm-init/
+kubectl -n kube-system create serviceaccount tiller
+kubectl create clusterrolebinding tiller --clusterrole=cluster-admin --serviceaccount=kube-system:tiller
+
