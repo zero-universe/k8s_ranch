@@ -14,6 +14,11 @@ helm repo add rancher-stable https://releases.rancher.com/server-charts/stable
 
 5. new ns
 kubectl create namespace cattle-system
+(with own certs:
+fullchain.pem -> tls.crt
+priv.key      -> tls.key
+kubectl -n cattle-system create secret tls tls-rancher-ingress --cert=tls.crt --key=tls.key)
+
 
 6. cert-manager
 kubectl apply --validate=false -f https://github.com/jetstack/cert-manager/releases/download/v0.15.1/cert-manager.yaml
@@ -30,7 +35,9 @@ $ helm install cert-manager jetstack/cert-manager --namespace cert-manager --ver
 
 7. rancher
 
-helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=rancher.media.zottel.gnu
+helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=host.fqdn
+( with own certs: 
+helm install rancher rancher-stable/rancher --namespace cattle-system --set hostname=host.fqdn --set ingress.tls.source=secret )
 
 
 
